@@ -1,11 +1,14 @@
 ﻿using AlkemyWallet.Core.Helper;
 using ApiSalud.Core.Interfaces;
 using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static AlkemyWallet.Core.Helper.Constants;
 
 namespace ApiSalud.Controllers;
 
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("Product")]
 public class ProductController : ControllerBase

@@ -1,5 +1,4 @@
 ﻿using ApiSalud.DataAccess;
-using ApiSalud.Entities;
 using ApiSalud.Repositories.Interfaces;
 
 namespace ApiSalud.Repositories;
@@ -7,7 +6,7 @@ namespace ApiSalud.Repositories;
 public class UnitOfWork : IUnitOfWork
 {
     private readonly SaludContext _dbContext;
-    private IRepositoryBase<Product>? _productRepository;
+
     private IProductRepository _productWithDetails;
 
 
@@ -16,9 +15,10 @@ public class UnitOfWork : IUnitOfWork
         _dbContext = dbContext;
     }
 
-
-    public IRepositoryBase<Product> ProductRepository => _productRepository ?? new RepositoryBase<Product>(_dbContext);
-    public IProductRepository ProductWithDetails => _productWithDetails ?? new ProductRepository(_dbContext);
+    public IProductRepository ProductRepository
+    {
+        get { return _productWithDetails = _productWithDetails ?? new ProductRepository(_dbContext); }
+    }
 
 
     public void Dispose()

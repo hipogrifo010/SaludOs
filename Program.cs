@@ -1,18 +1,27 @@
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
 using ApiSalud.Core.Interfaces;
 using ApiSalud.Core.Services;
 using ApiSalud.DataAccess;
+using ApiSalud.Entities;
 using ApiSalud.Repositories;
 using ApiSalud.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers()
     .AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
+
+var configuration = builder.Services.BuildServiceProvider()
+    .GetRequiredService<IConfiguration>();
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -35,22 +44,59 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped(typeof(IRepositoryBase<>), typeof(RepositoryBase<>));
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddCors(opt =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+    .AddEntityFrameworkStores<SaludContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddTransient<ISendgridMailService, SendGridMailService>();
+builder.Services.AddAuthentication(x =>
 {
-    opt.AddDefaultPolicy(o => o
-        .AllowAnyHeader()
-        .AllowAnyOrigin()
-        .AllowAnyMethod());
+    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme; x.DefaultChallengeScheme =
+        JwtBearerDefaults.AuthenticationScheme;
+}).AddCookie(x => { x.Cookie.Name = "token"; }).AddJwtBearer(x => {
+    x.RequireHttpsMetadata = false;
+    x.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context => { context.Token = context.Request.Cookies["token"]; return Task.CompletedTask; }
+    };
+    x.SaveToken = true;
+    x.TokenValidationParameters = new TokenValidationParameters
+    {
+
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = "localhost",
+        ValidAudience = "localhost",
+        IssuerSigningKey = new SymmetricSecurityKey(
+            Encoding.UTF8.GetBytes(configuration["Llave_super_secreta"])),
+        ClockSkew = TimeSpan.Zero
+    };
+
+
+
+});
+builder.Services.AddCors(options =>
+{
+    var frontEndUrl = configuration.GetValue<string>("frontend_url");
+    options.AddDefaultPolicy(builder => {
+        builder
+            .WithOrigins(frontEndUrl)
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials();
+    });
 });
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+//if (app.Environment.IsDevelopment())
+// {
 
+//}
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.UseAuthorization();

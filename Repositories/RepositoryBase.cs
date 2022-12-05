@@ -38,18 +38,19 @@ public class RepositoryBase<T> : IRepositoryBase<T> where T : class
 
     public async Task Insert(T entity)
     {
-        _entities.Add(entity);
+        _context.Set<T>().Add(entity);
+        await _context.SaveChangesAsync();
     }
 
     public async Task Update(T entity)
     {
-        _entities.Update(entity);
+        _context.Set<T>().Update(entity);
+        await _context.SaveChangesAsync();
     }
 
-    public async Task Delete(int id)
+    public async Task Delete(T entity)
     {
-        var entity = await GetById(id);
-
-        if (entity != null) _entities.Remove(entity);
+        _context.Set<T>().Remove(entity);
+        await _context.SaveChangesAsync();
     }
 }
