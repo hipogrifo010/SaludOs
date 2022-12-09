@@ -3,9 +3,11 @@
     "http": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://ubaldoramirezapi.vault.azure.net/",
+        "AZURE_USERNAME": "darioubramirez@gmail.com"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5223"
@@ -13,11 +15,13 @@
     "https": {
       "commandName": "Project",
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "Llave_super_secreta": "",
-        "SendGridAPIKey": ""
+        "Llave_super_secreta": "apxowkgubjhmpadihdsqeoypxnapqwie",
+        "SendGridKey": "IlmVxJiPSOikNJP9uEuq-g",
+        "VaultUri": "https://ubaldoramirezapi.vault.azure.net/",
+        "AZURE_USERNAME": "darioubramirez@gmail.com"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "https://localhost:7105;http://localhost:5105"
@@ -25,9 +29,11 @@
     "IIS Express": {
       "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "VaultUri": "https://ubaldoramirezapi.vault.azure.net/",
+        "AZURE_USERNAME": "darioubramirez@gmail.com"
       }
     }
   },
@@ -38,6 +44,15 @@
     "iisExpress": {
       "applicationUrl": "http://localhost:31275",
       "sslPort": 44335
+    }
+  },
+  "AuthenticationServer.API": {
+    "commandName": "Project",
+    "launchBrowser": false,
+    "applicationUrl": "https://localhost:7105;http://localhost:5105",
+    "enviromentVariables": {
+      "ASPNETCORE_ENVIROMENT": "development",
+      "AZURE_CLIENT_ID": "7e411d2e-1028-4cdb-8446-54e52ce84845"
     }
   }
 }
