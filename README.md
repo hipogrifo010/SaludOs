@@ -2,6 +2,10 @@
 Api de Listados de precios Farmacéuticos.
 
 
+##**Links**
+Aqui se recopilan endpoints y links del Api con dominio en Azure.
+https://ubaldoramirez.azurewebsites.net/swagger/index.html
+
 ## **Especificación de la Arquitectura**
 Se utilizaron los principios Solid, se intento crear la aplicacion lo mas limpio posible.
 
