@@ -1,4 +1,5 @@
-﻿using ApiSalud.DataAccess.Seeds;
+﻿using AlkemyWallet.Core.Helper;
+using ApiSalud.DataAccess.Seeds;
 using ApiSalud.Entities;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
@@ -6,10 +7,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using ApiSalud.Core.Helper;
 
 namespace ApiSalud.DataAccess;
 
-public class SaludContext : DbContext
+public class SaludContext :  IdentityDbContext<ApplicationUser>
 {
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -27,6 +29,7 @@ public class SaludContext : DbContext
         optionsBuilder.UseSqlServer(secret);
     }
 
+
     public DbSet<Product>? Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -34,6 +37,7 @@ public class SaludContext : DbContext
         
         base.OnModelCreating(modelBuilder);
         new ProductSeeder(modelBuilder).SeedProduct();
+
 
         modelBuilder.Entity<Product>().ToTable("Product");
         base.OnModelCreating(modelBuilder);

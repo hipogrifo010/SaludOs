@@ -12,13 +12,14 @@
     "apis1": {
       "type": "apis"
     },
-    "mssql1": {
-      "type": "mssql",
-      "connectionId": "ConnectionStrings--VaultName"
-    },
     "secrets1": {
       "type": "secrets",
       "connectionId": "VaultUri"
+    },
+    "mssql1": {
+      "type": "mssql",
+      "connectionId": "ConnectionStrings:VaultName",
+      "dynamicId": null
     }
   }
 }

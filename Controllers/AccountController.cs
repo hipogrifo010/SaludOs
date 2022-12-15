@@ -2,6 +2,7 @@
 using System.Security.Claims;
 using System.Text;
 using AlkemyWallet.Core.Helper;
+using ApiSalud.Core.Helper;
 using ApiSalud.Core.Interfaces;
 using ApiSalud.Entities;
 using Azure.Identity;
@@ -17,7 +18,7 @@ namespace ApiSalud.Core.Services;
 public class AccountController : Controller
 {
     private readonly IConfiguration _configuration;
-   // private readonly ISendgridMailService _mailService;
+    // private readonly ISendgridMailService _mailService;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
 
@@ -49,8 +50,8 @@ public class AccountController : Controller
             if (result.Succeeded)
             {
                 // falta configurar el sistema de Mailsend es decir subir los secrets a azure :)
-               // await _mailService.SendEmailAsync(model.Email, "Email: " + user.Email,
-              //     " Password: " + model.Password + " fecha de creacion: " + DateTime.Now);
+                // await _mailService.SendEmailAsync(model.Email, "Email: " + user.Email,
+                //     " Password: " + model.Password + " fecha de creacion: " + DateTime.Now);
 
                 return BuildToken(model);
             }
@@ -106,7 +107,7 @@ public class AccountController : Controller
         var expiration = DateTime.UtcNow.AddHours(1);
 
         var token = new JwtSecurityToken(
-            issuer:  "ubaldoramirez.azurewebsites.net",
+            issuer: "ubaldoramirez.azurewebsites.net",
             audience: "ubaldoramirez.azurewebsites.net",
             claims,
             expires: expiration,
@@ -117,8 +118,8 @@ public class AccountController : Controller
         {
             token = new JwtSecurityTokenHandler().WriteToken(token),
             expiration = expiration,
-            
-        }) ;
+
+        });
 
     }
 }
