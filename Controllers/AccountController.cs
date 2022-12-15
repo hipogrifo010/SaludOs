@@ -17,17 +17,19 @@ namespace ApiSalud.Core.Services;
 public class AccountController : Controller
 {
     private readonly IConfiguration _configuration;
-    private readonly ISendgridMailService _mailService;
+   // private readonly ISendgridMailService _mailService;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly UserManager<ApplicationUser> _userManager;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
-        IConfiguration configuration,
-        ISendgridMailService mailService)
+        IConfiguration configuration
+        //ISendgridMailService mailService
+        )
+
     {
-        _mailService = mailService;
+        //_mailService = mailService;
         _userManager = userManager;
         _signInManager = signInManager;
         _configuration = configuration;
@@ -46,8 +48,9 @@ public class AccountController : Controller
             var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
-                await _mailService.SendEmailAsync(model.Email, "Email: " + user.Email,
-                    " Password: " + model.Password + " fecha de creacion: " + DateTime.Now);
+                // falta configurar el sistema de Mailsend es decir subir los secrets a azure :)
+               // await _mailService.SendEmailAsync(model.Email, "Email: " + user.Email,
+              //     " Password: " + model.Password + " fecha de creacion: " + DateTime.Now);
 
                 return BuildToken(model);
             }

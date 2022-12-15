@@ -1,24 +1,41 @@
 ﻿using ApiSalud.DataAccess.Seeds;
 using ApiSalud.Entities;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 
 namespace ApiSalud.DataAccess;
 
-public class SaludContext : IdentityDbContext<ApplicationUser>
+public class SaludContext : DbContext
 {
-    public SaludContext(DbContextOptions<SaludContext> options) : base(options)
+
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+
+        const string secretConnection = "ConnectionStrings--QueueConnectionString";
+        var keyVaultName = "ubaldoramirezapi";
+        var kvUri = $"https://{keyVaultName}.vault.azure.net";
+
+
+        var client = new SecretClient(new Uri(kvUri), new DefaultAzureCredential());
+        var secret = client.GetSecretAsync(secretConnection).Result.Value.Value;
+
+
+        optionsBuilder.UseSqlServer(secret);
     }
 
     public DbSet<Product>? Products { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder builder)
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(builder);
-        new ProductSeeder(builder).SeedProduct();
+        
+        base.OnModelCreating(modelBuilder);
+        new ProductSeeder(modelBuilder).SeedProduct();
 
-        builder.Entity<Product>().ToTable("Product");
-        base.OnModelCreating(builder);
+        modelBuilder.Entity<Product>().ToTable("Product");
+        base.OnModelCreating(modelBuilder);
     }
 }
