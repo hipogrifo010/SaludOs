@@ -19,8 +19,7 @@ public class UnitOfWork : IUnitOfWork
     {
         get { return _productWithDetails = _productWithDetails ?? new ProductRepository(_dbContext); }
     }
-
-
+ 
     public void Dispose()
     {
         _dbContext.Dispose();
